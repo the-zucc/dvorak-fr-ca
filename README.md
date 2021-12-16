@@ -4,7 +4,7 @@
 
 Cette disposition est une implémentation directe pour **Windows** de la disposition clavier **_Dvorak - Français (Canada)_** qui est disponible dans la majorité des distributions **GNU/Linux**.
 
-**_Dvorak - Français (Canada)_** est, l'analogue **Dvorak** du clavier **_Français (Canada)_** dans le monde des dispositions **QWERTY**. Cette disposition fait emploi de _dead keys_ afin de permettre à l'utilisateur de mettre des accents. Cette manière de faire est ressemblante au clavier QWERTY **_Français (Canada)_**, à l'opposé du clavier **Canadien Multilingue Standard**, qui possède des touches dédiées aux lettre à accents.
+**_Dvorak - Français (Canada)_** est, l'analogue **Dvorak** du clavier **_Français (Canada)_** dans le monde des dispositions **QWERTY**. Cette disposition fait emploi de _dead keys_ afin de permettre à l'utilisateur de mettre des accents. Cette manière de faire est ressemblante au clavier QWERTY **_Français (Canada)_**, à l'opposé du clavier **Canadien Multilingue Standard**, qui possède des touches dédiées aux lettres à accents.
 ## A Word on This Keyboard Layout
 This keyboard layout is a direct **Windows** implementation of the **_Dvorak - French (Canada)_** layout which ships with a large number of GNU/Linux distributions. 
 
