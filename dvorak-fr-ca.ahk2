@@ -1,0 +1,271 @@
+﻿#Requires AutoHotkey v2.0
+
+; stores the last dead key that was used
+global gDeadKey := ""
+
+; all dead keys will behave the same. Each one triggers a state in which
+; the next key will be modified with the dead key.
+DeadKey(key) {
+    global gDeadKey
+    
+    if gDeadKey != "" {
+        SendKey(key)
+    } else {
+        gDeadKey := key
+    }
+}
+
+; non-dead keys will be sent using this function. This is the common
+; behavior for dead keys in commonly used keyboard layouts.
+SendKey(key) {
+    global gDeadKey
+    
+    Send(gDeadKey)
+    Send(key)
+    gDeadKey := ""
+}
+
+; space bar will behave differently if a dead key has been pressed immediately before.
+SpaceBar() {
+    global gDeadKey
+    if gDeadKey != "" {
+        SendKey("") ; this sends the dead key, appended with nothing
+    } else {
+        SendKey(" ") ; this sends the (empty) dead key (simply ""), appended with a space (so it sends " ")
+    }
+}
+
+; the following map holds, for each dead key, a map with each key
+; and the character that results from modifying the key with the
+; dead key.
+gDeadKeyMapping := Map(
+    "¸", Map(
+        "c", "ç", "C", "Ç"
+    ),
+    "``", Map(
+        "a", "à", "A", "À",
+        "e", "è", "E", "È",
+        "i", "ì", "I", "Ì",
+        "o", "ò", "O", "Ò",
+        "u", "ù", "U", "Ù"
+    ),
+    "^", Map(
+        "a", "â", "A", "Â",
+        "e", "ê", "E", "Ê",
+        "i", "î", "I", "Î",
+        "o", "ô", "O", "Ô",
+        "u", "û", "U", "Û"
+    ),
+    "¨", Map(
+        "a", "ä", "A", "Ä",
+        "e", "ë", "E", "Ë",
+        "i", "ï", "I", "Ï",
+        "o", "ö", "O", "Ö",
+        "u", "ü", "U", "Ü"
+    ),
+    "´", Map(
+        "a", "á", "A", "Á",
+        "e", "é", "E", "É",
+        "i", "í", "I", "Í",
+        "o", "ó", "O", "Ó",
+        "u", "ú", "U", "Ú"
+    )
+)
+
+; Function to handle letters with Caps Lock support
+Letter(ltr) {
+    global gDeadKey
+    if gDeadKey != "" {
+        if gDeadKeyMapping.Has(gDeadKey) {
+            ; TODO REMOVE THE FOLLOWING CHECK ONCE THE KEYBOARD WORKS
+            if gDeadKeyMapping[gDeadKey].Has(ltr) {
+                Send(gDeadKeyMapping[gDeadKey][ltr])
+                gDeadKey := ""
+            } else {
+                SendKey(ApplyCapsLock(ltr))
+            }
+        }
+    } else {
+        Send(ApplyCapsLock(ltr))
+    }
+}
+
+; Function to apply Caps Lock effect
+ApplyCapsLock(ltr) {
+    if GetKeyState("CapsLock", "T") {
+        return StrUpper(ltr)
+    }
+    return ltr
+}
+
+
+
+SC39::SpaceBar()
+
+;;;;;;;;;;;;;;;;;; NUMBERS ROW ;;;;;;;;;;;;;;;;;;
+
+SC0029::SendKey("{#}")
++SC0029::SendKey("|")
+!SC0029::SendKey("\")
+
+SC0002::SendKey("1")
++SC0002::SendKey("{!}")
+!SC0002::SendKey("±")
+
+SC0003::SendKey("2")
++SC0003::SendKey("`"")
+!SC0003::SendKey("@")
+
+SC0004::SendKey("3")
++SC0004::SendKey("/")
+!SC0004::SendKey("£")
+
+SC0005::SendKey("4")
++SC0005::SendKey("$")
+!SC0005::SendKey("¢")
+
+SC0006::SendKey("5")
++SC0006::SendKey("%")
+!SC0006::SendKey("¤")
+
+SC0007::SendKey("6")
++SC0007::SendKey("?")
+!SC0007::SendKey("¬")
+
+SC0008::SendKey("7")
++SC0008::SendKey("&")
+!SC0008::SendKey("¦")
+
+SC0009::SendKey("8")
++SC0009::SendKey("*")
+^!SC0009::SendKey("²")
+
+SC000A::SendKey("9")
++SC000A::SendKey("(")
+^!SC000A::SendKey("³")
+
+SC000B:: SendKey("0")
++SC000B::SendKey(")")
+!SC000B::SendKey("¼")
+
+SC000C::DeadKey("^")
+!SC000C::SendKey("[")
+
+SC000D::DeadKey("¸")
++SC000D::DeadKey("¨")
+!SC000D::SendKey("]")
+
+;;;;;;;;;;;;;;;;;; ROW ABOVE HOME ROW ;;;;;;;;;;;;;;;;;;
+
+SC0010::DeadKey("``")
+!SC0010::SendKey("{{}")
+
+SC0011::SendKey(",")
++SC011::SendKey("'")
+
+SC0012::SendKey(".")
+
+SC0013::Letter("p")
++SC0013::Letter("P")
+^!SC0013::SendKey("¶")
+
+SC0014::Letter("y")
++SC0014::Letter("Y")
+
+SC0015::Letter("f")
++SC0015::Letter("F")
+
+SC0016::Letter("g")
++SC0016::Letter("G")
+
+SC0017::Letter("c")
++SC0017::Letter("C")
+
+SC0018::Letter("r")
++SC0018::Letter("R")
+
+SC0019::Letter("l")
++SC0019::Letter("L")
+
+SC001A::Letter("é")
++SC001A::Letter("É")
+^!SC001A::DeadKey("´")
+
+SC001B::SendKey("=")
++SC001B::SendKey("{+}")
+^!SC001B::SendKey("¾")
+
+;;;;;;;;;;;;;;;;;; HOME ROW ;;;;;;;;;;;;;;;;;;
+
+SC001E::Letter("a")
++SC001E::Letter("A")
+
+SC001F::Letter("o")
++SC001F::Letter("O")
+
+SC0020::Letter("e")
++SC0020::Letter("E")
+
+SC0021::Letter("u")
++SC0021::Letter("U")
+
+SC0022::Letter("i")
++SC0022::Letter("I")
+
+SC0023::Letter("d")
++SC0023::Letter("D")
+
+SC0024::Letter("h")
++SC0024::Letter("H")
+
+SC0025::Letter("t")
++SC0025::Letter("T")
+
+SC0026::Letter("n")
++SC0026::Letter("N")
+
+SC0027::Letter("s")
++SC0027::Letter("S")
+
+SC0028::SendKey("-")
++SC0028::SendKey("_") 
+
+SC002B::SendKey("<")
++SC002B::SendKey(">")
+!SC002B::SendKey("{}}")
+
+;;;;;;;;;;;;;;;;;; ROW BELOW HOME ROW ;;;;;;;;;;;;;;;;;;
+
+SC0056::SendKey("«")
++SC0056::SendKey("»")
+
+SC002C::SendKey(";")
++SC002C::SendKey(":")
+!SC002C::SendKey("{~}")
+
+SC002D::Letter("q")
++SC002D::Letter("Q")
+
+SC002E::Letter("j")
++SC002E::Letter("J")
+
+SC002F::Letter("k")
++SC002F::Letter("K")
+
+SC0030::Letter("x")
++SC0030::Letter("X")
+
+SC0031::Letter("b")
++SC0031::Letter("B")
+
+SC0032::Letter("m")
++SC0032::Letter("M")
+
+SC0033::Letter("w")
++SC0033::Letter("W")
+
+SC0034::Letter("v")
++SC0034::Letter("V")
+
+SC0035::Letter("z")
++SC0035::Letter("Z")
